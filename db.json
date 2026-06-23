@@ -3,9 +3,9 @@
     {
       "id": "1",
       "title": "첫 번째 노트",
-      "content": "eeeee",
+      "content": "eeeeeasfd",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2026-03-23T13:57:08.282Z"
+      "updatedAt": "2026-06-23T13:33:59.798Z"
     },
     {
       "id": "2",
@@ -27,6 +27,13 @@
       "createdAt": "2026-03-23T13:57:30.308Z",
       "updatedAt": "2026-03-23T13:57:30.308Z",
       "id": "dP_NPYuHV94"
+    },
+    {
+      "title": "123",
+      "content": "123123",
+      "createdAt": "2026-06-23T13:34:08.348Z",
+      "updatedAt": "2026-06-23T13:34:08.348Z",
+      "id": "9W_Jr-w9XvM"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
