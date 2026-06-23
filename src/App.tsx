@@ -1,3 +1,4 @@
+// 생성: 2026-03-23
 import { useState } from 'react';
 import { NotesProvider } from './context/NotesContext';
 import { Layout } from './components/Layout';
