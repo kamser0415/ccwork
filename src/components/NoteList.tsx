@@ -1,3 +1,4 @@
+// 생성: 2026-03-23
 import { useNotes } from '../context/NotesContext';
 import { NoteItem } from './NoteItem';
 

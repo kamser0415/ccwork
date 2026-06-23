@@ -71,6 +71,8 @@ props로 받는 구조. `NoteEditor`는 `selectedNoteId`/`isCreating` 변화에 
 
 ### 컴포넌트 구현
 
+- **컴포넌트 파일 맨 위 주석에 생성 날짜를 적는다**: 첫 줄에 `// 생성: YYYY-MM-DD` 형식으로
+  그 파일을 만든 날짜를 적는다(예: `// 생성: 2026-06-23`). 새 컴포넌트를 만들 때 이 주석부터 작성한다.
 - 함수형 컴포넌트 + 화살표 핸들러. 노트 데이터는 `useNotes()`로 가져오고, 선택 상태는 props로 받는다(§아키텍처 3).
 - **가드 절(early return)을 맨 위에 모은다**: `loading → error → empty → 빈 선택` 순으로 각각 별도 JSX를 return하고,
   정상 JSX는 마지막에. (`NoteList`, `NoteEditor` 참고.)

@@ -1,3 +1,4 @@
+// 생성: 2026-03-23
 import { ReactNode } from 'react';
 
 interface LayoutProps {

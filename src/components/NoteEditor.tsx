@@ -1,3 +1,4 @@
+// 생성: 2026-03-23
 import { useState, useEffect } from 'react';
 import { useNotes } from '../context/NotesContext';
 
