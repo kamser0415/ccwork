@@ -13,14 +13,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 명령어
 
-| 명령어 | 설명 |
-|--------|------|
-| `npm run dev` | Vite(5173) + JSON Server(3001) **동시 실행** (concurrently) |
-| `npm run server` | JSON Server만 실행 — 앱은 이게 떠 있어야 동작 |
-| `npm run build` | `tsc` 타입체크 후 Vite 빌드 |
-| `npm run lint` | ESLint 실행 (**`--fix` 포함** — 자동 수정됨) |
-| `npm run format` | Prettier 전체 포맷 |
-| `npm test` | Vitest 1회 실행 / `npm run test:watch` 워치 모드 |
+| 명령어           | 설명                                                        |
+| ---------------- | ----------------------------------------------------------- |
+| `npm run dev`    | Vite(5173) + JSON Server(3001) **동시 실행** (concurrently) |
+| `npm run server` | JSON Server만 실행 — 앱은 이게 떠 있어야 동작               |
+| `npm run build`  | `tsc` 타입체크 후 Vite 빌드                                 |
+| `npm run lint`   | ESLint 실행 (**`--fix` 포함** — 자동 수정됨)                |
+| `npm run format` | Prettier 전체 포맷                                          |
+| `npm test`       | Vitest 1회 실행 / `npm run test:watch` 워치 모드            |
 
 단일 테스트 실행: `npx vitest run src/path/to/file.test.tsx` 또는 `npx vitest -t "테스트명"`.
 
@@ -38,6 +38,7 @@ db.json  ──(JSON Server :3001)──  src/api/notes.ts  ──  NotesContext
 **서버가 아닌 이 계층에서** 생성한다. 응답 `res.ok` 검사 후 `Error`를 throw.
 
 **2. 상태 계층 (`src/context/NotesContext.tsx`)** — 노트 데이터의 **단일 출처(single source of truth)**.
+
 - `notes`, `loading`, `error` 상태 + `createNote`/`updateNote`/`deleteNote` 액션을 제공.
 - 마운트 시 `fetchNotes()` 1회 로드. 각 액션은 API 호출 **응답으로 받은 노트**로 로컬 `setNotes`를
   갱신한다(재요청 없음). 데이터에 접근하려면 항상 `useNotes()` 훅을 쓴다 — Provider 밖에서 호출 시 throw.
@@ -109,3 +110,30 @@ props로 받는 구조. `NoteEditor`는 `selectedNoteId`/`isCreating` 변화에 
 Vitest + Testing Library, `vite.config.ts`에 통합 설정(`globals: true`, `jsdom`,
 `setupFiles: ./src/test-setup.ts` → jest-dom matcher). 현재 API mocking 설정은 없으므로
 Context/컴포넌트 테스트 시 `src/api/notes.ts`의 fetch를 직접 모킹해야 한다.
+
+## 커밋 워크플로우 (Git 훅으로 강제)
+
+커밋하면 두 검사가 **자동으로** 돈다. **Husky**가 git 훅 시점에 아래를 호출하며, 둘 다 통과해야 커밋이 만들어진다.
+세 도구(husky / lint-staged / commitlint)는 서로 독립적이며 각각 별도 설치된 패키지다 — husky는 "언제 실행할지"(트리거)만,
+실제 작업은 lint-staged·commitlint이 담당한다.
+
+**1. `pre-commit` → `lint-staged`** (`.husky/pre-commit`).
+스테이징된 파일만 골라 검사하고, 자동 수정분을 다시 `git add` 한다. 규칙은 `package.json`의 `"lint-staged"` 키에 있다:
+
+- `*.{ts,tsx}` → `eslint --fix` + `prettier --write` (ESLint flat config가 ts/tsx만 대상이므로 여기에 맞춤)
+- `*.{css,json,md}` → `prettier --write`만
+- ESLint가 자동 수정 못 하는 오류(미사용 변수 등)가 남으면 커밋이 **차단**된다.
+
+**2. `commit-msg` → `commitlint`** (`.husky/commit-msg`, 설정 `commitlint.config.mjs`).
+**Conventional Commits** 형식(`type: subject`)을 강제한다. 허용 type은 `@commitlint/config-conventional` 기본값 —
+`feat`/`fix`/`docs`/`style`/`refactor`/`perf`/`test`/`build`/`ci`/`chore`/`revert`.
+
+- subject는 **한국어 허용**, header 최대 100자. 예: `feat: 노트 검색 기능 추가`.
+- ⚠️ `init:` 같은 **비표준 type은 거부**된다(과거 커밋엔 영향 없음). 도구/설정 변경은 `chore:`를 쓴다.
+
+**설정 파일 메모**
+
+- `commitlint.config.mjs`는 **`.mjs`** 다 — `package.json`에 `"type"` 필드가 없어(CommonJS 기본) `.js`로 두면 모듈 경고가 난다.
+- `.prettierignore`로 `package-lock.json`·`db.json`·`dist`를 포맷 대상에서 제외한다(lock/데이터 파일이 매 커밋마다 재포맷되는 것 방지).
+- `package.json`의 `"prepare": "husky"` 덕에 **`npm install`만 하면 훅이 자동 설치**된다(별도 셋업 불필요).
+- 긴급 시 `git commit --no-verify`로 훅을 우회할 수 있으나 지양한다(로컬 훅이라 서버단 강제는 아님).
