@@ -5,9 +5,10 @@ import { NoteItem } from './NoteItem';
 interface NoteListProps {
   selectedNoteId: string | null;
   onSelect: (id: string) => void;
+  query: string;
 }
 
-export function NoteList({ selectedNoteId, onSelect }: NoteListProps) {
+export function NoteList({ selectedNoteId, onSelect, query }: NoteListProps) {
   const { notes, loading, error, deleteNote } = useNotes();
 
   const handleDelete = async (id: string) => {
@@ -36,12 +37,27 @@ export function NoteList({ selectedNoteId, onSelect }: NoteListProps) {
     );
   }
 
+  const keyword = query.trim().toLowerCase();
+  const filtered = keyword
+    ? notes.filter(
+        (note) =>
+          note.title.toLowerCase().includes(keyword) ||
+          note.content.toLowerCase().includes(keyword),
+      )
+    : notes;
+
+  if (filtered.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground text-center py-8">검색 결과가 없습니다</p>
+    );
+  }
+
   return (
     <>
       <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground px-1 pb-1">
-        노트 {notes.length}개
+        노트 {filtered.length}개
       </p>
-      {notes.map((note) => (
+      {filtered.map((note) => (
         <NoteItem
           key={note.id}
           note={note}
