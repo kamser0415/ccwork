@@ -1,0 +1,4 @@
+# 자동 생성/관리 파일 — 포맷 대상에서 제외
+package-lock.json
+db.json
+dist
