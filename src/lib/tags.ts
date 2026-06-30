@@ -1,6 +1,7 @@
-// RED 골격(skeleton) — 시그니처만 있고 행동은 없다.
-// GREEN 단계에서 throw 본문을 실제 로직으로 교체한다(파일·시그니처 유지).
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- 골격: 파라미터는 GREEN에서 사용
-export function parseTagInput(_input: string): string[] {
-  throw new Error('not implemented');
+// 입력 문자열을 태그 배열로 변환한다.
+// #2 범위: 앞뒤 공백 제거 후 빈 문자열이면 [], 아니면 [trimmed] (0개 또는 1개).
+// (쉼표 분리·길이 검증(#3)·대소문자 중복 제거(#4)는 후속 이슈에서 이 함수 동작을 확장한다.)
+export function parseTagInput(input: string): string[] {
+  const trimmed = input.trim();
+  return trimmed === '' ? [] : [trimmed];
 }

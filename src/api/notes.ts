@@ -5,7 +5,9 @@ const API_URL = 'http://localhost:3001';
 export async function fetchNotes(): Promise<Note[]> {
   const res = await fetch(`${API_URL}/notes`);
   if (!res.ok) throw new Error('Failed to fetch notes');
-  return res.json();
+  const notes = (await res.json()) as Note[];
+  // 기존 노트 호환: tags 필드가 없는 노트는 []로 정규화(이 경계가 tags 배열을 보장).
+  return notes.map((n) => ({ ...n, tags: n.tags ?? [] }));
 }
 
 export async function createNote(

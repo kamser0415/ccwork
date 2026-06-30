@@ -1,6 +1,9 @@
 // 생성: 2026-03-23
 import { useState, useEffect } from 'react';
 import { useNotes } from '../context/NotesContext';
+import { useTagInput } from '../hooks/useTagInput';
+import { TagInput } from './TagInput';
+import { TagChipList } from './TagChipList';
 
 interface NoteEditorProps {
   selectedNoteId: string | null;
@@ -13,6 +16,7 @@ export function NoteEditor({ selectedNoteId, isCreating, onDone }: NoteEditorPro
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
+  const { tags, tagInput, setTagInput, commit, reset } = useTagInput([]);
 
   const selectedNote = notes.find((n) => n.id === selectedNoteId);
 
@@ -21,9 +25,11 @@ export function NoteEditor({ selectedNoteId, isCreating, onDone }: NoteEditorPro
     if (selectedNote) {
       setTitle(selectedNote.title);
       setContent(selectedNote.content);
+      reset(selectedNote.tags ?? []);
     } else if (isCreating) {
       setTitle('');
       setContent('');
+      reset([]);
     }
   }, [selectedNoteId, isCreating]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -36,9 +42,9 @@ export function NoteEditor({ selectedNoteId, isCreating, onDone }: NoteEditorPro
     setSaving(true);
     try {
       if (isCreating) {
-        await createNote(title, content);
+        await createNote(title, content, tags);
       } else if (selectedNoteId) {
-        await updateNote(selectedNoteId, { title, content });
+        await updateNote(selectedNoteId, { title, content, tags });
       }
       onDone();
     } catch (e) {
@@ -54,9 +60,7 @@ export function NoteEditor({ selectedNoteId, isCreating, onDone }: NoteEditorPro
       <div className="flex items-center justify-center h-full">
         <div className="text-center space-y-3">
           <p className="text-5xl">📝</p>
-          <p className="text-muted-foreground text-sm">
-            노트를 선택하거나 새 노트를 만드세요
-          </p>
+          <p className="text-muted-foreground text-sm">노트를 선택하거나 새 노트를 만드세요</p>
         </div>
       </div>
     );
@@ -89,6 +93,12 @@ export function NoteEditor({ selectedNoteId, isCreating, onDone }: NoteEditorPro
         rows={14}
         className="w-full text-base text-foreground/70 bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50 leading-relaxed"
       />
+
+      {/* 태그 */}
+      <div className="mt-4 space-y-2">
+        <TagChipList tags={tags} />
+        <TagInput value={tagInput} onChange={setTagInput} onCommit={commit} />
+      </div>
 
       {/* 버튼 영역 */}
       <div className="flex gap-3 mt-6 pt-4 border-t border-border">

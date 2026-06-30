@@ -101,28 +101,30 @@ interface TagChipListProps {
 
 ### 정상
 
-- [정상] parseTagInput - should return `["react"]` when input is `"react"`
-- [정상] useTagInput.commit - should append the parsed tag and clear tagInput when tagInput is `"react"`
-- [정상] useTagInput.reset - should set tags to initialTags and clear tagInput when called with `["react","study"]`
-- [정상] TagInput - should call onCommit when Enter is pressed and not composing
-- [정상] TagInput - should call onChange with the new value when the user types
-- [정상] TagChipList - should render one chip per tag (key={tag}) when tags=`["react","study"]`
-- [정상] NotesContext.createNote - should call api.createNote with `{ title, content, tags }` when creating a note
-- [정상] NoteEditor(저장·영속) - should persist tags and show them on reopen when a tag is added and saved
+- [정상] parseTagInput - should return `["react"]` when input is `"react"` ✅
+- [정상] useTagInput.commit - should append the parsed tag and clear tagInput when tagInput is `"react"` ✅
+- [정상] useTagInput.reset - should set tags to initialTags and clear tagInput when called with `["react","study"]` ✅
+- [정상] TagInput - should call onCommit when Enter is pressed and not composing ✅
+- [정상] TagInput - should call onChange with the new value when the user types ✅
+- [정상] TagChipList - should render one chip per tag (key={tag}) when tags=`["react","study"]` ✅
+- [정상] NotesContext.createNote - should call api.createNote with `{ title, content, tags }` when creating a note ✅
+- [정상] NoteEditor(저장·영속) - should persist tags and show them on reopen when a tag is added and saved ✅
 
 ### 경계
 
-- [경계] parseTagInput - should return `[]` when input is `""` (빈 문자열)
-- [경계] parseTagInput - should return `[]` when input is `"   "` (공백만)
-- [경계] parseTagInput - should return `["react"]` when input is `"  react  "` (앞뒤 공백 trim)
-- [경계] useTagInput.commit - should leave tags unchanged when tagInput is blank/whitespace
-- [경계] useTagInput.commit - should append a duplicate (no dedup in #2) when the same tag is committed twice (중복 방지는 #4)
-- [경계] useTagInput.reset - should clear tags to `[]` when called with `[]` (tags 없는 기존 노트)
-- [경계] TagInput - should NOT call onCommit when Enter is pressed during IME composition (`isComposing`)
-- [경계] TagChipList - should render nothing when tags=`[]` (빈 배열)
-- [경계] fetchNotes - should default tags to `[]` when a fetched note has no tags field
-- [경계] NoteEditor(취소 폐기) - should discard added tags when canceled without saving
-- [경계] 기존 노트 호환 - should save without error and start with tags=`[]` when opening a legacy note (no tags) and editing the title
+- [경계] parseTagInput - should return `[]` when input is `""` (빈 문자열) ✅
+- [경계] parseTagInput - should return `[]` when input is `"   "` (공백만) ✅
+- [경계] parseTagInput - should return `["react"]` when input is `"  react  "` (앞뒤 공백 trim) ✅
+- [경계] useTagInput.commit - should leave tags unchanged when tagInput is blank/whitespace ✅
+- [경계] useTagInput.commit - should append a duplicate (no dedup in #2) when the same tag is committed twice (중복 방지는 #4) ✅
+- [경계] useTagInput.reset - should clear tags to `[]` when called with `[]` (tags 없는 기존 노트) ✅
+- [경계] TagInput - should NOT call onCommit when Enter is pressed during IME composition (`isComposing`) ✅
+- [경계] TagChipList - should render nothing when tags=`[]` (빈 배열) ✅
+- [경계] fetchNotes - should default tags to `[]` when a fetched note has no tags field ✅
+- [경계] NoteEditor(취소 폐기) - should discard added tags when canceled without saving ✅
+- [경계] 기존 노트 호환 - should save without error and start with tags=`[]` when opening a legacy note (no tags) and editing the title ✅
+- [경계] NoteEditor(IME 통합) - should not add a chip when Enter is pressed during IME composition ✅ <!-- AC 검증 보강: 통합 레벨 IME 가드 -->
+- [경계] NoteEditor(레거시 저장) - should call updateNote with `tags=[]` when saving a legacy note without adding tags ✅ <!-- AC 검증 보강: AC3 영속 인자까지 단언 -->
 
 ### 예외
 
