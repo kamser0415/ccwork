@@ -10,6 +10,16 @@ describe('useTagInput', () => {
     expect(result.current.tagInput).toBe('');
   });
 
+  // 이슈 #3 AC1 갭 봉합: 쉼표 다중 입력 커밋이 [...prev, ...parsed] 스프레드로 N=2를 실제 반영하는지.
+  // (parsed[0]만 취하는 회귀를 잡는 가드 — parseTagInput 단위테스트만으론 이 경로가 미검증)
+  it('should append both tags and clear tagInput when committing "react, study"', () => {
+    const { result } = renderHook(() => useTagInput([]));
+    act(() => result.current.setTagInput('react, study'));
+    act(() => result.current.commit());
+    expect(result.current.tags).toEqual(['react', 'study']);
+    expect(result.current.tagInput).toBe('');
+  });
+
   it('should set tags to initialTags and clear tagInput when reset is called with ["react","study"]', () => {
     const { result } = renderHook(() => useTagInput([]));
     act(() => result.current.setTagInput('draft'));
