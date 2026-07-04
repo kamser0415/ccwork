@@ -8,6 +8,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test-setup.ts',
+    // Vitest는 src/ 안의 단위·통합 테스트만 실행한다.
+    // e2e/의 Playwright 스펙(*.spec.ts)까지 주우면 @playwright/test 임포트로 깨지므로 범위를 한정한다.
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
