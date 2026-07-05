@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { parseTagInput } from '../lib/tags';
+import { mergeTags, parseTagInput } from '../lib/tags';
 
 export interface UseTagInputResult {
   tags: string[];
@@ -19,7 +19,7 @@ export function useTagInput(initialTags: string[] = []): UseTagInputResult {
   const commit = () => {
     const parsed = parseTagInput(tagInput);
     if (parsed.length > 0) {
-      setTags((prev) => [...prev, ...parsed]); // #2는 중복 제거 없음(중복 방지는 #4)
+      setTags((prev) => mergeTags(prev, parsed)); // #4: 대소문자 무시 중복 제거
     }
     setTagInput('');
   };

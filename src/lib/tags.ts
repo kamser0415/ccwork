@@ -17,3 +17,17 @@ export function parseTagInput(input: string): string[] {
     return true;
   });
 }
+
+// 기존 태그(prev)와 신규 파싱 결과(incoming)를 대소문자 무시로 병합·중복 제거한다 (spec §5 5단계).
+// 첫 등장 원형(casing) 유지, prev 원형 보존. 순수 함수(부수효과 없음).
+export function mergeTags(prev: string[], incoming: string[]): string[] {
+  const seen = new Set(prev.map((tag) => tag.toLowerCase()));
+  const added: string[] = [];
+  for (const tag of incoming) {
+    const key = tag.toLowerCase();
+    if (seen.has(key)) continue; // prev 또는 앞선 incoming과 대소문자 무시 중복 → 제외
+    seen.add(key);
+    added.push(tag); // 첫 등장 원형 유지
+  }
+  return [...prev, ...added];
+}

@@ -1,4 +1,4 @@
-import { parseTagInput } from './tags'; // 아직 미구현 → import 실패 = 정당한 RED
+import { mergeTags, parseTagInput } from './tags';
 
 describe('parseTagInput', () => {
   it('should return ["react"] when input is "react"', () => {
@@ -68,5 +68,43 @@ describe('parseTagInput', () => {
     expect(parseTagInput('a'.repeat(21) + ', ' + 'b'.repeat(21))).toEqual([]);
     expect(errSpy).toHaveBeenCalledTimes(2);
     errSpy.mockRestore();
+  });
+});
+
+// --- 이슈 #4: 대소문자 무시 중복 방지 (spec §5 5단계) ---
+// mergeTags는 아직 throw 골격 → 아래 전부 not implemented로 실행 RED.
+describe('mergeTags', () => {
+  // 정상
+  it('should return ["React","vue"] when prev=["React"], incoming=["react","vue"] (react 무시, React 원형 유지)', () => {
+    expect(mergeTags(['React'], ['react', 'vue'])).toEqual(['React', 'vue']);
+  });
+
+  it('should return ["a","b"] when prev=["a"], incoming=["b"] (중복 없는 일반 병합)', () => {
+    expect(mergeTags(['a'], ['b'])).toEqual(['a', 'b']);
+  });
+
+  // 경계
+  it('should return [] when prev=[], incoming=[] (양쪽 빈)', () => {
+    expect(mergeTags([], [])).toEqual([]);
+  });
+
+  it('should return ["x"] when prev=["x"], incoming=[] (추가 없음)', () => {
+    expect(mergeTags(['x'], [])).toEqual(['x']);
+  });
+
+  it('should return ["a"] when prev=[], incoming=["a","A"] (입력 내부 대소문자 중복 제거, 첫 등장 유지)', () => {
+    expect(mergeTags([], ['a', 'A'])).toEqual(['a']);
+  });
+
+  it('should return ["study"] when prev=["study"], incoming=["STUDY"] (기존과 대소문자만 다른 중복 미추가)', () => {
+    expect(mergeTags(['study'], ['STUDY'])).toEqual(['study']);
+  });
+
+  it('should not mutate prev or incoming (순수 함수 — 원본 배열 불변)', () => {
+    const prev = ['React'];
+    const incoming = ['react', 'vue'];
+    mergeTags(prev, incoming);
+    expect(prev).toEqual(['React']);
+    expect(incoming).toEqual(['react', 'vue']);
   });
 });
