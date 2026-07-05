@@ -21,7 +21,7 @@ export function TagChipList({ tags, onRemove }: TagChipListProps) {
           key={tag}
           className="bg-surface-container text-on-surface-variant text-label-md inline-flex items-center gap-1 rounded-full px-3 py-1"
         >
-          {tag}
+          <span>{tag}</span>
           {onRemove && (
             <button
               type="button"

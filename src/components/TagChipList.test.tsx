@@ -38,4 +38,13 @@ describe('TagChipList', () => {
     expect(onRemove).toHaveBeenCalledWith('react');
     expect(onParentClick).not.toHaveBeenCalled();
   });
+
+  // 회귀 방지(E2E seam): × 버튼 추가가 칩 라벨의 표시 텍스트를 오염시키면 안 된다.
+  // 라벨과 × 가 같은 요소에 섞이면 텍스트가 "react×"가 되어 exact-text 매칭(E2E getByText exact:true)이 깨진다.
+  // 라벨을 자기 요소로 분리해 전체 textContent가 정확히 태그 문자열이어야 한다.
+  it('should keep the tag label text exactly the tag when onRemove is set (× must not contaminate exact text)', () => {
+    render(<TagChipList tags={['react']} onRemove={() => {}} />);
+    const label = screen.getByText('react', { exact: true });
+    expect(label).toHaveTextContent(/^react$/);
+  });
 });
