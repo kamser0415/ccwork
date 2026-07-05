@@ -15,6 +15,10 @@ dist-ssr/
 # Test coverage
 coverage/
 
+# Playwright (E2E 산출물 — 매 실행마다 재생성)
+playwright-report/
+test-results/
+
 # Local env
 .env
 .env.local
