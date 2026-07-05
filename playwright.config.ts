@@ -19,6 +19,11 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
+    launchOptions: {
+      // SLOWMO=800 처럼 주면 각 액션 사이에 지연(ms)을 넣어, --headed에서 동작을 천천히 볼 수 있다.
+      // 기본 0이라 평소 실행엔 영향이 없다(디버깅 전용 스위치).
+      slowMo: process.env.SLOWMO ? Number(process.env.SLOWMO) : 0,
+    },
   },
   projects: [
     {
