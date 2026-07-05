@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { mergeTags, parseTagInput } from '../lib/tags';
+import { mergeTags, parseTagInput, removeTag } from '../lib/tags';
 
 export interface UseTagInputResult {
   tags: string[];
   tagInput: string;
   setTagInput: (value: string) => void;
   commit: () => void;
+  remove: (tag: string) => void;
   reset: (initialTags: string[]) => void;
 }
 
@@ -24,11 +25,16 @@ export function useTagInput(initialTags: string[] = []): UseTagInputResult {
     setTagInput('');
   };
 
+  // 해당 태그만 제거한다(#5). 함수형 업데이트로 removeTag 순수 함수를 재사용.
+  const remove = (tag: string) => {
+    setTags((prev) => removeTag(prev, tag));
+  };
+
   // 폼 동기화: 선택된 노트의 태그로 초기화하고 입력창을 비운다.
   const reset = (nextTags: string[]) => {
     setTags(nextTags);
     setTagInput('');
   };
 
-  return { tags, tagInput, setTagInput, commit, reset };
+  return { tags, tagInput, setTagInput, commit, remove, reset };
 }
