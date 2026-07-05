@@ -12,6 +12,9 @@ node_modules/
 dist/
 dist-ssr/
 
+# Test coverage
+coverage/
+
 # Local env
 .env
 .env.local
@@ -30,3 +33,9 @@ dist-ssr/
 
 # Claude Code (개인 로컬 설정만 무시 — 공유 설정 .claude/settings.json 등은 커밋 가능)
 .claude/settings.local.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
