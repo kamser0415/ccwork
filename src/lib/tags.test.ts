@@ -1,4 +1,4 @@
-import { mergeTags, parseTagInput } from './tags';
+import { mergeTags, parseTagInput, removeTag } from './tags';
 
 describe('parseTagInput', () => {
   it('should return ["react"] when input is "react"', () => {
@@ -106,5 +106,32 @@ describe('mergeTags', () => {
     mergeTags(prev, incoming);
     expect(prev).toEqual(['React']);
     expect(incoming).toEqual(['react', 'vue']);
+  });
+});
+
+// --- 이슈 #5: 칩 × 개별 삭제 (spec §6) ---
+// removeTag는 아직 throw 골격 → 아래 전부 not implemented로 실행 RED.
+describe('removeTag', () => {
+  // 정상
+  it('should return ["study"] when tags=["react","study"], target="react" (해당 태그만 제거·순서 유지)', () => {
+    expect(removeTag(['react', 'study'], 'react')).toEqual(['study']);
+  });
+
+  // 경계
+  it('should return ["a","b"] when tags=["a","b"], target="z" (없는 태그 → 변화 없는 새 배열)', () => {
+    expect(removeTag(['a', 'b'], 'z')).toEqual(['a', 'b']);
+  });
+
+  it('should return [] when tags=["x"], target="x" (마지막 태그 제거 → 빈 배열)', () => {
+    expect(removeTag(['x'], 'x')).toEqual([]);
+  });
+
+  it('should return [] when tags=[], target="x" (빈 입력)', () => {
+    expect(removeTag([], 'x')).toEqual([]);
+  });
+
+  // 예외 (대소문자 구분 — 삭제는 정확 일치)
+  it('should NOT remove and return ["React"] when tags=["React"], target="react" (대소문자만 다르면 제거 안 함)', () => {
+    expect(removeTag(['React'], 'react')).toEqual(['React']);
   });
 });

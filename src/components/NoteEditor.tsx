@@ -16,7 +16,7 @@ export function NoteEditor({ selectedNoteId, isCreating, onDone }: NoteEditorPro
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
-  const { tags, tagInput, setTagInput, commit, reset } = useTagInput([]);
+  const { tags, tagInput, setTagInput, commit, remove, reset } = useTagInput([]);
 
   const selectedNote = notes.find((n) => n.id === selectedNoteId);
 
@@ -96,7 +96,7 @@ export function NoteEditor({ selectedNoteId, isCreating, onDone }: NoteEditorPro
 
       {/* 태그 */}
       <div className="mt-4 space-y-2">
-        <TagChipList tags={tags} />
+        <TagChipList tags={tags} onRemove={remove} />
         <TagInput value={tagInput} onChange={setTagInput} onCommit={commit} />
       </div>
 

@@ -31,3 +31,9 @@ export function mergeTags(prev: string[], incoming: string[]): string[] {
   }
   return [...prev, ...added];
 }
+
+// tags에서 target을 제외한 새 배열을 반환한다 (spec §6). 정확 일치(대소문자 구분) 비교로 target만 제거.
+// 순수 함수(부수효과 없음, 원본 불변). target이 없으면 동일 내용의 새 배열을 반환한다.
+export function removeTag(tags: string[], target: string): string[] {
+  return tags.filter((t) => t !== target);
+}
